@@ -1,17 +1,16 @@
 package dev.pgm.events.ready;
 
 import dev.pgm.events.config.AppData;
-import java.time.Duration;
+import dev.pgm.events.events.TeamReadyEvent;
+import dev.pgm.events.events.TeamUnreadyEvent;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventPriority;
 import tc.oc.pgm.api.match.Match;
-import tc.oc.pgm.api.party.Party;
 import tc.oc.pgm.api.player.MatchPlayer;
 import tc.oc.pgm.lib.app.ashcon.intake.Command;
 import tc.oc.pgm.match.ObservingParty;
-import tc.oc.pgm.start.StartCountdown;
-import tc.oc.pgm.start.StartMatchModule;
+import tc.oc.pgm.util.bukkit.Events;
 
 public class ReadyCommands {
 
@@ -36,15 +35,7 @@ public class ReadyCommands {
       return;
     }
 
-    Party party = player.getParty();
-    Bukkit.broadcastMessage(
-        party.getColor() + player.getParty().getNameLegacy() + ChatColor.RESET + " is now ready.");
-    readyParties.ready(party);
-
-    if (readyParties.allReady(match))
-      match
-          .needModule(StartMatchModule.class)
-          .forceStartCountdown(Duration.ofSeconds(20), Duration.ZERO);
+    Events.callEvent(new TeamReadyEvent(player.getParty()), EventPriority.NORMAL);
   }
 
   @Command(aliases = "unready", desc = "Mark your team as no longer being ready")
@@ -60,22 +51,7 @@ public class ReadyCommands {
       return;
     }
 
-    Party party = player.getParty();
-    Bukkit.broadcastMessage(
-        party.getColor()
-            + player.getParty().getNameLegacy()
-            + ChatColor.RESET
-            + " is now unready.");
-
-    if (readyParties.allReady(match)) {
-      readyParties.unReady(party);
-      if (readySystem.unreadyShouldCancel()) {
-        // check if unready should cancel
-        match.getCountdown().cancelAll(StartCountdown.class);
-      }
-    } else {
-      readyParties.unReady(party);
-    }
+    Events.callEvent(new TeamUnreadyEvent(player.getParty()), EventPriority.NORMAL);
   }
 
   private boolean preConditions(Match match) {

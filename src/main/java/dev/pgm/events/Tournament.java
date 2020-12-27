@@ -7,7 +7,7 @@ import dev.pgm.events.format.TournamentFormat;
 import dev.pgm.events.listeners.MatchLoadListener;
 import dev.pgm.events.listeners.PlayerJoinListen;
 import dev.pgm.events.ready.ReadyCommands;
-import dev.pgm.events.ready.ReadyListener;
+import dev.pgm.events.listeners.ReadyListener;
 import dev.pgm.events.ready.ReadyParties;
 import dev.pgm.events.ready.ReadySystem;
 import dev.pgm.events.team.ConfigTeamParser;
@@ -43,7 +43,7 @@ public class Tournament extends JavaPlugin {
 
     ReadySystem system = new ReadySystem();
     ReadyParties parties = new ReadyParties();
-    ReadyListener readyListener = new ReadyListener(system, parties);
+
     ReadyCommands readyCommands = new ReadyCommands(system, parties);
 
     BasicBukkitCommandGraph g =
@@ -56,7 +56,8 @@ public class Tournament extends JavaPlugin {
 
     Bukkit.getPluginManager().registerEvents(new MatchLoadListener(teamManager), this);
     Bukkit.getPluginManager().registerEvents(new PlayerJoinListen(teamManager), this);
-    Bukkit.getPluginManager().registerEvents(readyListener, this);
+    Bukkit.getPluginManager().registerEvents(new ReadyListener(system, parties), this);
+
     new CommandExecutor(this, g).register();
   }
 

@@ -1,11 +1,10 @@
 package dev.pgm.events.listeners;
 
-import java.time.Duration;
-
 import dev.pgm.events.events.TeamReadyEvent;
 import dev.pgm.events.events.TeamUnreadyEvent;
 import dev.pgm.events.ready.ReadyParties;
 import dev.pgm.events.ready.ReadySystem;
+import java.time.Duration;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -36,14 +35,14 @@ public class ReadyListener implements Listener {
     Match match = party.getMatch();
 
     Bukkit.broadcastMessage(
-            party.getColor() + party.getNameLegacy() + ChatColor.RESET + " is now ready.");
+        party.getColor() + party.getNameLegacy() + ChatColor.RESET + " is now ready.");
 
     parties.ready(party);
 
     if (parties.allReady(match))
       match
-              .needModule(StartMatchModule.class)
-              .forceStartCountdown(Duration.ofSeconds(20), Duration.ZERO);
+          .needModule(StartMatchModule.class)
+          .forceStartCountdown(Duration.ofSeconds(20), Duration.ZERO);
   }
 
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -52,10 +51,7 @@ public class ReadyListener implements Listener {
     Match match = party.getMatch();
 
     Bukkit.broadcastMessage(
-            party.getColor()
-                    + party.getNameLegacy()
-                    + ChatColor.RESET
-                    + " is now unready.");
+        party.getColor() + party.getNameLegacy() + ChatColor.RESET + " is now unready.");
 
     if (parties.allReady(match)) {
       parties.unReady(party);

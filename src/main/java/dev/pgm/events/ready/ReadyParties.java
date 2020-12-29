@@ -1,10 +1,11 @@
 package dev.pgm.events.ready;
 
 import dev.pgm.events.config.AppData;
-import java.util.HashSet;
-import java.util.Set;
 import tc.oc.pgm.api.match.Match;
 import tc.oc.pgm.api.party.Party;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ReadyParties {
 

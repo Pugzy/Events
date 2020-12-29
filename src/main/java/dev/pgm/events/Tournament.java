@@ -6,10 +6,9 @@ import dev.pgm.events.commands.providers.TournamentProvider;
 import dev.pgm.events.format.TournamentFormat;
 import dev.pgm.events.listeners.MatchLoadListener;
 import dev.pgm.events.listeners.PlayerJoinListen;
-import dev.pgm.events.listeners.ReadyListener;
 import dev.pgm.events.ready.ReadyCommands;
-import dev.pgm.events.ready.ReadyParties;
-import dev.pgm.events.ready.ReadySystem;
+import dev.pgm.events.ready.ReadyListener;
+import dev.pgm.events.ready.ReadyManager;
 import dev.pgm.events.team.ConfigTeamParser;
 import dev.pgm.events.team.DefaultTeamManager;
 import dev.pgm.events.team.TournamentTeamManager;
@@ -29,6 +28,7 @@ public class Tournament extends JavaPlugin {
 
   private TournamentTeamManager teamManager;
   private TournamentManager tournamentManager;
+  private ReadyManager readyManager;
 
   private static Tournament plugin;
 
@@ -39,15 +39,14 @@ public class Tournament extends JavaPlugin {
 
     teamManager = DefaultTeamManager.manager();
     tournamentManager = new TournamentManager();
+    readyManager = new ReadyManager();
+
     ConfigTeamParser.getInstance(); // load teams now
 
-    ReadySystem system = new ReadySystem();
-    ReadyParties parties = new ReadyParties();
-
-    ReadyCommands readyCommands = new ReadyCommands(system, parties);
+    ReadyCommands readyCommands = new ReadyCommands(readyManager);
 
     BasicBukkitCommandGraph g =
-        new BasicBukkitCommandGraph(new CommandModule(tournamentManager, teamManager));
+        new BasicBukkitCommandGraph(new CommandModule(tournamentManager, teamManager, readyManager));
     DispatcherNode node = g.getRootDispatcherNode();
     node = node.registerNode("tourney", "tournament", "tm", "events");
     node.registerCommands(new TournamentUserCommands());
@@ -56,7 +55,7 @@ public class Tournament extends JavaPlugin {
 
     Bukkit.getPluginManager().registerEvents(new MatchLoadListener(teamManager), this);
     Bukkit.getPluginManager().registerEvents(new PlayerJoinListen(teamManager), this);
-    Bukkit.getPluginManager().registerEvents(new ReadyListener(system, parties), this);
+    Bukkit.getPluginManager().registerEvents(new ReadyListener(readyManager), this);
 
     new CommandExecutor(this, g).register();
   }
@@ -74,6 +73,10 @@ public class Tournament extends JavaPlugin {
     return tournamentManager;
   }
 
+  public ReadyManager getReadyManager() {
+    return readyManager;
+  }
+
   public static Tournament get() {
     return plugin;
   }
@@ -82,10 +85,12 @@ public class Tournament extends JavaPlugin {
 
     private final TournamentManager tournamentManager;
     private final TournamentTeamManager teamManager;
+    private final ReadyManager readyManager;
 
-    public CommandModule(TournamentManager tournamentManager, TournamentTeamManager teamManager) {
+    public CommandModule(TournamentManager tournamentManager, TournamentTeamManager teamManager, ReadyManager readyManager) {
       this.tournamentManager = tournamentManager;
       this.teamManager = teamManager;
+      this.readyManager = readyManager;
     }
 
     @Override
@@ -103,6 +108,7 @@ public class Tournament extends JavaPlugin {
       bind(Match.class).toProvider(new MatchProvider());
       bind(TournamentManager.class).toInstance(tournamentManager);
       bind(TournamentTeamManager.class).toInstance(teamManager);
+      bind(ReadyManager.class).toInstance(readyManager);
       bind(TournamentFormat.class).toProvider(new TournamentProvider(tournamentManager));
     }
   }

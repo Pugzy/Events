@@ -26,7 +26,7 @@ public class ReferenceTournamentTeam implements TournamentTeam {
   }
 
   @Override
-  public List<TournamentPlayer> getPlayers() {
+  public List<? extends TournamentPlayer> getPlayers() {
     return updateReference().getPlayers();
   }
 

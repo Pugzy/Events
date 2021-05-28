@@ -1,7 +1,6 @@
 package dev.pgm.events.team;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class DefaultTournamentTeam implements TournamentTeam {
@@ -22,22 +21,6 @@ public class DefaultTournamentTeam implements TournamentTeam {
   @Override
   public List<TournamentPlayer> getPlayers() {
     return this.participants;
-  }
-
-  @Override
-  public void setPlayers(List<TournamentPlayer> players) {
-    this.participants.clear();
-    this.participants.addAll(players);
-  }
-
-  @Override
-  public void addPlayer(UUID player, boolean canVeto) {
-    this.participants.add(TournamentPlayer.create(player, canVeto));
-  }
-
-  @Override
-  public void removePlayer(UUID player) {
-    this.participants.removeIf(tournamentPlayer -> tournamentPlayer.getUUID().equals(player));
   }
 
   @Override

@@ -7,12 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
-
 import org.bukkit.ChatColor;
 import tc.oc.pgm.api.party.Competitor;
 import tc.oc.pgm.api.player.MatchPlayer;
-import tc.oc.pgm.match.PartyImpl;
 import tc.oc.pgm.teams.Team;
 
 public class DefaultTeamManager implements TournamentTeamManager {
@@ -118,32 +115,38 @@ public class DefaultTeamManager implements TournamentTeamManager {
   public void syncTeams(List<? extends TournamentTeam> teams) {
     List<MatchPlayer> unassigned = new ArrayList<>();
 
-    teams.forEach(tournamentTeam -> {
-      // Get the matching team if playing
-      Optional<Team> matchTeam = fromTournamentTeam(tournamentTeam);
-      matchTeam.ifPresent(team -> {
+    teams.forEach(
+        tournamentTeam -> {
+          // Get the matching team if playing
+          Optional<Team> matchTeam = fromTournamentTeam(tournamentTeam);
+          matchTeam.ifPresent(
+              team -> {
+                List<? extends TournamentPlayer> toAssign = tournamentTeam.getPlayers();
 
-        List<? extends TournamentPlayer> toAssign = tournamentTeam.getPlayers();
+                team.getPlayers()
+                    .forEach(
+                        player -> {
+                          // If not on team move to unassigned
+                          if (!tournamentTeam.containsPlayer(player.getId())) {
+                            unassigned.add(player);
+                          } else {
+                            toAssign.removeIf(
+                                tournamentPlayer ->
+                                    tournamentPlayer.getUUID().equals(player.getId()));
+                          }
+                        });
 
-        team.getPlayers().forEach(player -> {
-            // If not on team move to unassigned
-            if (!tournamentTeam.containsPlayer(player.getId())) {
-              unassigned.add(player);
-            } else {
-              toAssign.removeIf(tournamentPlayer -> tournamentPlayer.getUUID().equals(player.getId()));
-            }
+                // Find other players on server to assign
+                toAssign.forEach(
+                    tournamentPlayer -> {
+                      MatchPlayer player = team.getMatch().getPlayer(tournamentPlayer.getUUID());
+                      if (player != null) {
+                        team.addPlayer(player);
+                        unassigned.remove(player);
+                      }
+                    });
+              });
         });
-
-        // Find other players on server to assign
-        toAssign.forEach(tournamentPlayer -> {
-          MatchPlayer player = team.getMatch().getPlayer(tournamentPlayer.getUUID());
-          if (player != null) {
-            team.addPlayer(player);
-            unassigned.remove(player);
-          }
-        });
-      });
-    });
 
     // Move all unassigned players to obs
     unassigned.forEach(player -> player.getMatch().getObservers().add(player));

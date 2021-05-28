@@ -1,6 +1,7 @@
 package dev.pgm.events.team;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.bukkit.ChatColor;
@@ -40,4 +41,6 @@ public interface TournamentTeamManager {
   String formattedName(TournamentTeam tournamentTeam);
 
   Collection<? extends TournamentTeam> teams();
+
+  void syncTeams(List<? extends TournamentTeam> teams);
 }

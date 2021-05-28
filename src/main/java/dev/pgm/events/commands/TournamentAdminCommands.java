@@ -71,7 +71,7 @@ public class TournamentAdminCommands {
   @Command(
       aliases = "info",
       desc = "View information about a team",
-      usage = "<team",
+      usage = "<team>",
       perms = "events.staff")
   public void info(CommandSender sender, TournamentTeamRegistry registry, @Text String name) {
     TournamentTeam team = registry.getTeam(name);

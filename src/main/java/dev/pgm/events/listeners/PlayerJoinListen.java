@@ -94,6 +94,7 @@ public class PlayerJoinListen implements Listener {
   public void onLeaveParticipate(PlayerParticipationStopEvent event) {
     Optional<Team> playerTeam = manager.playerTeam(event.getPlayer().getId());
     // check if the player is on one of the teams
+
     if (playerTeam.isPresent())
       event.cancel(text("You may not leave in a tournament setting!", NamedTextColor.RED));
 

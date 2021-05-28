@@ -57,11 +57,10 @@ public class EventsPlugin extends JavaPlugin {
 
     DispatcherNode node = graph.getRootDispatcherNode();
     node.registerCommands(new VetoCommands());
+    node.registerCommands(readyCommands);
 
     node = node.registerNode("tourney", "tournament", "tm", "events");
     node.registerCommands(new TournamentUserCommands());
-
-    node.registerCommands(readyCommands);
 
     DispatcherNode subNode = node.registerNode("tourney", "tournament", "tm", "events");
     subNode.registerCommands(new TournamentUserCommands());

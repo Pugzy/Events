@@ -14,6 +14,12 @@ public interface TournamentTeam {
 
   List<? extends TournamentPlayer> getPlayers();
 
+  void setPlayers(List<TournamentPlayer> players);
+
+  void addPlayer(UUID player, boolean canVeto);
+
+  void removePlayer(UUID player);
+
   default boolean containsPlayer(UUID player) {
     return getPlayers().stream().anyMatch(x -> x.getUUID().equals(player));
   }

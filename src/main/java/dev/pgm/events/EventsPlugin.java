@@ -59,9 +59,6 @@ public class EventsPlugin extends JavaPlugin {
     node.registerCommands(new VetoCommands());
     node.registerCommands(readyCommands);
 
-    node = node.registerNode("tourney", "tournament", "tm", "events");
-    node.registerCommands(new TournamentUserCommands());
-
     DispatcherNode subNode = node.registerNode("tourney", "tournament", "tm", "events");
     subNode.registerCommands(new TournamentUserCommands());
     subNode.registerCommands(new TournamentAdminCommands());

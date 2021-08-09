@@ -95,7 +95,7 @@ public class PlayerJoinListen implements Listener {
     Optional<Team> playerTeam = manager.playerTeam(event.getPlayer().getId());
     // check if the player is on one of the teams
 
-    if (playerTeam.isPresent())
+    if (playerTeam.isPresent() && playerTeam.get().equals(event.getCompetitor()))
       event.cancel(text("You may not leave in a tournament setting!", NamedTextColor.RED));
 
     BlitzMatchModule blitz = event.getMatch().getModule(BlitzMatchModule.class);

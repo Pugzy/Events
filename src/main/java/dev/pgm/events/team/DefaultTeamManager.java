@@ -122,7 +122,6 @@ public class DefaultTeamManager implements TournamentTeamManager {
           matchTeam.ifPresent(
               team -> {
                 List<? extends TournamentPlayer> toAssign = tournamentTeam.getPlayers();
-
                 team.getPlayers()
                     .forEach(
                         player -> {
@@ -141,7 +140,7 @@ public class DefaultTeamManager implements TournamentTeamManager {
                     tournamentPlayer -> {
                       MatchPlayer player = team.getMatch().getPlayer(tournamentPlayer.getUUID());
                       if (player != null) {
-                        team.addPlayer(player);
+                        player.getMatch().setParty(player, team);
                         unassigned.remove(player);
                       }
                     });
@@ -149,6 +148,6 @@ public class DefaultTeamManager implements TournamentTeamManager {
         });
 
     // Move all unassigned players to obs
-    unassigned.forEach(player -> player.getMatch().getObservers().add(player));
+    unassigned.forEach(player -> player.getMatch().setParty(player, player.getMatch().getDefaultParty()));
   }
 }

@@ -89,6 +89,7 @@ public class DefaultTeamManager implements TournamentTeamManager {
     return Optional.empty();
   }
 
+  @Override
   public Optional<Team> fromTournamentTeam(TournamentTeam tournamentTeam) {
     for (Map.Entry<TournamentTeam, Team> entry : teamMap.entrySet())
       if (entry.getKey().equals(tournamentTeam)) return Optional.of(entry.getValue());
@@ -148,6 +149,7 @@ public class DefaultTeamManager implements TournamentTeamManager {
         });
 
     // Move all unassigned players to obs
-    unassigned.forEach(player -> player.getMatch().setParty(player, player.getMatch().getDefaultParty()));
+    unassigned.forEach(
+        player -> player.getMatch().setParty(player, player.getMatch().getDefaultParty()));
   }
 }

@@ -32,6 +32,8 @@ public interface TournamentTeamManager {
 
   Optional<TournamentTeam> fromTeamID(String id);
 
+  Optional<Team> fromTournamentTeam(TournamentTeam tournamentTeam);
+
   ChatColor teamColour(TournamentTeam tournamentTeam);
 
   default String formattedName(Competitor team) {

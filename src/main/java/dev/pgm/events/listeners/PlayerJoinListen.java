@@ -100,6 +100,9 @@ public class PlayerJoinListen implements Listener {
 
   @EventHandler
   public void onLeaveParticipate(PlayerParticipationStopEvent event) {
+    // do not do anything when a player is leaving the server
+    if (event.getNextParty() == null) return;
+
     Optional<Team> playerTeam = manager.playerTeam(event.getPlayer().getId());
     // check if the player is on one of the teams
 
